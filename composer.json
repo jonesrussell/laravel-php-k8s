@@ -20,6 +20,7 @@
         }
     ],
     "require": {
+        "ext-yaml": "*",
         "renoki-co/php-k8s": "^3.7"
     },
     "autoload": {
