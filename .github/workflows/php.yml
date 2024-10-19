@@ -13,25 +13,47 @@ jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        php-version: ['8.2']  # You can add more PHP versions here
+        php: ['8.2']
+        laravel: ['11.*']
+        prefer: ['prefer-lowest', 'prefer-stable']
+        include:
+          - laravel: '11.*'
+            testbench: '9.*'  # Assuming testbench compatible with Laravel 11
     steps:
     - uses: actions/checkout@v4
-    - name: Set up PHP ${{ matrix.php-version }}
+    
+    - name: Set up PHP ${{ matrix.php }}
       uses: shivammathur/setup-php@v2
       with:
-        php-version: ${{ matrix.php-version }}
+        php-version: ${{ matrix.php }}
+        tools: composer
+
     - name: Validate composer.json and composer.lock
       run: composer validate --strict
+
     - name: Cache Composer packages
       id: composer-cache
       uses: actions/cache@v3
       with:
         path: vendor
-        key: ${{ runner.os }}-php-${{ matrix.php-version }}-${{ hashFiles('**/composer.lock') }}
+        key: ${{ runner.os }}-php-${{ matrix.php }}-${{ hashFiles('**/composer.lock') }}
         restore-keys: |
-          ${{ runner.os }}-php-${{ matrix.php-version }}-
+          ${{ runner.os }}-php-${{ matrix.php }}-
+
     - name: Install dependencies
-      run: composer install --prefer-dist --no-progress
+      run: |
+        composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
+        composer update --${{ matrix.prefer }} --prefer-dist --no-interaction --no-suggest
+
+    - name: Setup in-cluster config
+      run: |
+        sudo mkdir -p /var/run/secrets/kubernetes.io/serviceaccount
+        echo "some-token" | sudo tee /var/run/secrets/kubernetes.io/serviceaccount/token
+        echo "c29tZS1jZXJ0Cg==" | sudo tee /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        echo "some-namespace" | sudo tee /var/run/secrets/kubernetes.io/serviceaccount/namespace
+        sudo chmod -R 777 /var/run/secrets/kubernetes.io/serviceaccount/
+
     - name: Run test suite
       run: composer run-script test
