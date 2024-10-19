@@ -17,10 +17,10 @@ jobs:
       matrix:
         php: ['8.2']
         laravel: ['11.*']
-        prefer: ['prefer-lowest', 'prefer-stable']
+        prefer: ['prefer-stable']
         include:
           - laravel: '11.*'
-            testbench: '8.*'
+            testbench: '9.*'
     steps:
     - uses: actions/checkout@v4
     
