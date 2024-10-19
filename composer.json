@@ -11,18 +11,31 @@
         "kube"
     ],
     "license": "Apache-2.0",
-    "homepage": "https://github.com/renoki-co/laravel-php-k8s",
+    "homepage": "https://github.com/jonesrussell/laravel-php-k8s",
     "authors": [
         {
             "name": "Alex Renoki",
             "homepage": "https://github.com/rennokki",
             "role": "Developer"
+        },
+        {
+            "name": "Russell Jones",
+            "homepage": "https://github.com/jonesrussell",
+            "role": "Developer"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/jonesrussell/php-k8s.git"
         }
     ],
     "require": {
         "php": "^8.2",
         "ext-yaml": "*",
-        "renoki-co/php-k8s": "^3.8.1"
+        "ext-curl": "*",
+        "illuminate/support": "^11.0",
+        "jonesrussell/php-k8s": "dev-master"
     },
     "autoload": {
         "psr-4": {

@@ -20,7 +20,7 @@ jobs:
         prefer: ['prefer-lowest', 'prefer-stable']
         include:
           - laravel: '11.*'
-            testbench: '9.*'  # Assuming testbench compatible with Laravel 11
+            testbench: '9.*'
     steps:
     - uses: actions/checkout@v4
     
@@ -29,6 +29,7 @@ jobs:
       with:
         php-version: ${{ matrix.php }}
         tools: composer
+        extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv
 
     - name: Validate composer.json and composer.lock
       run: composer validate --strict
